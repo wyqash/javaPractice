@@ -1,9 +1,8 @@
 package AlgorithmsOnePercolation;
+import edu.princeton.cs.introcs.In;
 
 import java.lang.IllegalArgumentException;
 import java.util.Random;
-
-import edu.princeton.cs.introcs.In;
 
 public class PercolationStats {
 	
@@ -22,7 +21,7 @@ public class PercolationStats {
 		}
 		N = n;
 		T = t;
-		double [] pEstimates = new double [N];
+		double [] pEstimates = new double [T];
 		meanEstimate = 0.0;
 		stdEstimate = 0.0;
 		
@@ -30,22 +29,23 @@ public class PercolationStats {
 			
 			Percolation sampleExperiment = new Percolation(N);
 			Random rowGenerator = new Random();
-			Random columnGenerator = new Random();
+			// Random columnGenerator = new Random();
 			int counter = 0;
 			//			System.out.println("sample percolates? :                         = " + sampleExperiment.percolates());
 
 			while(!sampleExperiment.percolates()){
 				int rowNumber = 1 + rowGenerator.nextInt(N);
-				int columnNumber = 1 + columnGenerator.nextInt(N);
+//				int columnNumber = 1 + columnGenerator.nextInt(N);
+				int columnNumber = 1 + rowGenerator.nextInt(N);
 				// Make sure that this site is not yet open. 
 				while(sampleExperiment.isOpen(rowNumber, columnNumber)){
 					rowNumber = 1 + rowGenerator.nextInt(N);
-					columnNumber = 1 + columnGenerator.nextInt(N);
+//					columnNumber = 1 + columnGenerator.nextInt(N);
+					columnNumber = 1 + rowGenerator.nextInt(N);
 				}
 				sampleExperiment.open(rowNumber,
 						              columnNumber);
 				counter++;
-
 
 			}
 			pEstimates[i] = (double) counter/(double)(N*N);
