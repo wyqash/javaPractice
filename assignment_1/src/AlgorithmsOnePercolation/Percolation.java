@@ -2,7 +2,7 @@ package AlgorithmsOnePercolation;
 
 import java.lang.IllegalArgumentException;
 import java.lang.IndexOutOfBoundsException;
-
+import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
 	
@@ -29,11 +29,11 @@ public class Percolation {
 		
 		wquf = new WeightedQuickUnionUF(N*N + 2);
 		for(int i = 0; i< N; i++){
-		// connect the virtual top to the first row 
-		wquf.union(N*N+1,  0 + i);
-		// connect the virtual bottom to the last row
-		wquf.union(N*N+2，(N - 1)*N + i);
-			
+			// connect the virtual top to the first row 
+			wquf.union(N*N+1,  0 + i);
+			// connect the virtual bottom to the last row
+			wquf.union(N*N+2, (N - 1)*N + i);
+				
 		}
 	}
 
