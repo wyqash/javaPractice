@@ -1,5 +1,5 @@
-// package AlgorithmsOnePercolation;
-// import edu.princeton.cs.algs4.WeightedQuickUnionUF;
+package AlgorithmsOnePercolation;
+import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 import java.lang.IllegalArgumentException;
 import java.lang.IndexOutOfBoundsException;
