@@ -1,15 +1,15 @@
-
 package AlgorithmsOnePercolation;
 
 import java.lang.IllegalArgumentException;
 import java.util.Random;
 
+import edu.princeton.cs.introcs.In;
+
 public class PercolationStats {
-	
 	
 	private int N; // Number of grids
 	private int T; // Number of tests
-	private double[] pEstimates;
+
 	private double meanEstimate;
 	private double stdEstimate;
 	private double confidenceLo;
@@ -22,7 +22,7 @@ public class PercolationStats {
 		}
 		N = n;
 		T = t;
-		pEstimates = new double [N];
+		double [] pEstimates = new double [N];
 		meanEstimate = 0.0;
 		stdEstimate = 0.0;
 		
@@ -32,6 +32,8 @@ public class PercolationStats {
 			Random rowGenerator = new Random();
 			Random columnGenerator = new Random();
 			int counter = 0;
+			//			System.out.println("sample percolates? :                         = " + sampleExperiment.percolates());
+
 			while(!sampleExperiment.percolates()){
 				int rowNumber = 1 + rowGenerator.nextInt(N);
 				int columnNumber = 1 + columnGenerator.nextInt(N);
@@ -43,9 +45,11 @@ public class PercolationStats {
 				sampleExperiment.open(rowNumber,
 						              columnNumber);
 				counter++;
+
+
 			}
-			
-			pEstimates[i] = counter/(N*N);
+			pEstimates[i] = (double) counter/(double)(N*N);
+
 			meanEstimate += pEstimates[i];
 		}
 
@@ -91,7 +95,13 @@ public class PercolationStats {
 	}
 	
 	public static void main(String[] args){
-		
-		
+	    int N = Integer.parseInt(args[0]);
+	    int T = Integer.parseInt(args[1]);
+	    System.out.println("N is: " + N + ", T is: " + T);
+	    
+	    PercolationStats testSample = new PercolationStats(N, T);
+	    System.out.println("Mean:                         = " + testSample.mean());
+	    System.out.println("std:                          = " + testSample.stddev());
+	    System.out.println("95% confidence interval is:   = " + testSample.confidenceLo() + ", " + testSample.confidenceHi()); 
 	}
 }
