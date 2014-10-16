@@ -1,5 +1,5 @@
-package AlgorithmsOnePercolation;
-import edu.princeton.cs.algs4.WeightedQuickUnionUF;
+// package AlgorithmsOnePercolation;
+// import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 import java.lang.IllegalArgumentException;
 import java.lang.IndexOutOfBoundsException;
@@ -16,8 +16,8 @@ public class Percolation {
 	
 	
     public Percolation(int n){
-	if(n <= 0){
-	    throw new IllegalArgumentException("Negative grid size.");
+	if(n < 1){
+	    throw new IllegalArgumentException("Non-positive grid size.");
 	}
 	N = n;
 	siteGrids = new boolean [N*N + 2];
@@ -43,17 +43,20 @@ public class Percolation {
 
     // Open site (i, j) if it is not open yet.
     public void open(int i, int j){
-	if(i<1||i>N||j<1||j>N){
-	    throw new IndexOutOfBoundsException("Grid outside boundary.");
-	}
+	// Use the boundary check in "isOpen()"
+	if(isOpen(i,j)) 
+	    return;
+
 	int thisSite = two2one(i - 1, j - 1); 
+
 	siteGrids[thisSite] = true;
 
-	if(i==1)
+	if(i==1){
 	    wquf.union(N*N,  thisSite);
-	else if(i==N)
-	    wquf.union(N*N + 1, thisSite);
-
+	}else if(i==N){
+		if(wquf.connected(N*N, thisSite))
+		wquf.union(N*N + 1, thisSite);
+	}
 
 	//open; connect it to all of its adjacent open sites.
 	if(i>1)
