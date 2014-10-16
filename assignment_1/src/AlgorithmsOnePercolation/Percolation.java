@@ -9,6 +9,7 @@ public class Percolation {
     private int N;
     private boolean [] siteGrids;
     private WeightedQuickUnionUF wquf;
+    private boolean percolationJudge;
     // Create NN grid with all sites blocked
     private int two2one(int i, int j){
 	return i*N + j;
@@ -20,6 +21,7 @@ public class Percolation {
 	    throw new IllegalArgumentException("Non-positive grid size.");
 	}
 	N = n;
+	percolationJudge = false;
 	siteGrids = new boolean [N*N + 2];
 	for(int i = 0; i<N*N; i++)
 	    siteGrids[i] = false;
@@ -54,7 +56,7 @@ public class Percolation {
 	if(i==1){
 	    wquf.union(N*N,  thisSite);
 	}else if(i==N){
-		if(wquf.connected(N*N, thisSite))
+	    //	if(wquf.connected(N*N, thisSite))
 		wquf.union(N*N + 1, thisSite);
 	}
 
@@ -103,7 +105,10 @@ public class Percolation {
     // Does the system percolates? 
     public boolean percolates(){
     	// If the virtual top is connected to the virtual bottom
-    	return wquf.connected(N*N, N*N + 1);
+	if(percolationJudge)
+	    return percolationJudge;
+	else
+	    return wquf.connected(N*N, N*N + 1);
     }
     
     // test client
