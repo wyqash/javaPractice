@@ -1,5 +1,5 @@
-//package AlgorithmsOnePercolation;
-//import edu.princeton.cs.introcs.In;
+package AlgorithmsOnePercolation;
+import edu.princeton.cs.introcs.In;
 
 import java.lang.IllegalArgumentException;
 import java.util.Random;

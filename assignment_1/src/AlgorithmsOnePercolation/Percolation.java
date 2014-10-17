@@ -1,5 +1,5 @@
-//package AlgorithmsOnePercolation;
-//import edu.princeton.cs.algs4.WeightedQuickUnionUF;
+package AlgorithmsOnePercolation;
+import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 import java.lang.IllegalArgumentException;
 import java.lang.IndexOutOfBoundsException;
@@ -11,8 +11,9 @@ public class Percolation {
     private boolean [] siteGrids;
     private WeightedQuickUnionUF wquf;
     //    private boolean percolationJudge;
+
     // Create NN grid with all sites blocked
-    private int two2one(int i, int j){
+    private int getIndex(int i, int j){
 	return i*N + j;
     }
     private void checkInput(int i, int j){
@@ -46,56 +47,73 @@ public class Percolation {
 	siteGrids[gridSize + 1] = true;
 	// Connect the virtual top&bottom
 	wquf = new WeightedQuickUnionUF(gridSize + 2);
-	// wquf = new WeightedQuickUnionUF(gridSize + 1);
     }
 
     // Open site (i, j) if it is not open yet.
     public void open(int i, int j){
-	// Use the boundary check in "isOpen()"
-	if(isOpen(i,j)) 
-	    return;
+    	// Use the boundary check in "isOpen()"
+    	if(isOpen(i,j)) 
+    	    return;
 
-	int thisSite = two2one(i - 1, j - 1); 
+    	int thisSite = getIndex(i - 1, j - 1); 
 
-	siteGrids[thisSite] = true;
+    	siteGrids[thisSite] = true;
+    	//	boolean connectToNeighbor = false;
+    	//	int left = 0;
+    	//	int right = 0;
+    	//open; connect it to all of its adjacent open sites.
+    	if(i>1)
+    	    // the one on the previous row
+    	    if(isOpen(i - 1, j)){
+    		wquf.union(thisSite,getIndex(i - 2, j - 1));
+    		//		connectToNeighbor = true;
+    	    }
+    	if(i < N )
+    	    // the one on the next row
+    	    if(isOpen(i+1, j)){
+    		wquf.union(thisSite, getIndex(i, j - 1));
+    		//		connectToNeighbor = true;
+    	    }
+    	if(j < N ) 
+    	    // the one to the right
+    	    if(isOpen(i, j+1)){
+    		wquf.union(thisSite, getIndex(i - 1, j ));
+    		//		connectToNeighbor = true;
+    		//		right = 1;
+    	    }
+    	if(j > 1)
+    	    // the one to the left
+    	    if(isOpen(i, j-1)){
+    		wquf.union(thisSite, getIndex(i - 1, j - 2));
+    		//		connectToNeighbor = true;
+    		//		left = 1;
+    	    }
 
-	if(i==1){
-	    wquf.union(gridSize,  thisSite);
-	    if(N==1)
-	    	wquf.union(gridSize+1,  thisSite);
-	}else if(i==N){
-	    // if(!percolationJudge){
-	    // 	if(wquf.connected(gridSize, thisSite))
-		// percolationJudge = true;
-		wquf.union(gridSize + 1, thisSite);
-	    // }
-	}
 
-	//open; connect it to all of its adjacent open sites.
-	if(i>1)
-	    // the one on the previous row
-	    if(isOpen(i - 1, j))
-		wquf.union(thisSite,two2one(i - 2, j - 1));
-		
-	if(i < N )
-	    // the one on the next row
-	    if(isOpen(i+1, j))
-		wquf.union(thisSite, two2one(i, j - 1));
-	if(j < N ) 
-	    // the one to the right
-	    if(isOpen(i, j+1))
-		wquf.union(thisSite, two2one(i - 1, j ));
-	if(j > 1)
-	    // the one to the left
-	    if(isOpen(i, j-1))
-		wquf.union(thisSite, two2one(i - 1, j - 2));
+    	if(i==1){
+    	    wquf.union(gridSize,  thisSite);
+    	    if(N==1){
+    		//	    	percolationJudge = true;
+    	    	wquf.union(gridSize+1,  thisSite);
+    	    }
+    	}else if(i==N){
+	    //	    if(!percolationJudge){
+	    //		if(wquf.connected(gridSize, thisSite)){
+	    	    wquf.union(gridSize + 1, thisSite);
+
+		    //		    percolationJudge = true;
+		    //		}
+		//	    }// Percolated already? 
+
+    	}
+
     }
 
     // Is site (i,j) open?
     public boolean isOpen(int i, int j){
      	checkInput(i, j);
 	i--;j--;
-	return siteGrids[two2one(i, j)];
+	return siteGrids[getIndex(i, j)];
     }    
     
     // Is site (i,j) full?
@@ -105,14 +123,14 @@ public class Percolation {
 
 	// Is this grid connected to the virtual top ? 	
     	return wquf.connected( 
-			      gridSize, two2one(i, j));
+			      gridSize, getIndex(i, j));
     }
     
     // Does the system percolates? 
     public boolean percolates(){
     	// If the virtual top is connected to the virtual bottom
-	// if(percolationJudge)
-	//return percolationJudge;
+	//if(percolationJudge)
+	//		return percolationJudge;
 	// else
 	return wquf.connected(gridSize, gridSize + 1);
     }
