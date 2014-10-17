@@ -1,5 +1,5 @@
-package AlgorithmsOnePercolation;
-import edu.princeton.cs.algs4.WeightedQuickUnionUF;
+//package AlgorithmsOnePercolation;
+//import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 import java.lang.IllegalArgumentException;
 import java.lang.IndexOutOfBoundsException;
@@ -7,40 +7,46 @@ import java.lang.IndexOutOfBoundsException;
 public class Percolation {
 	
     private int N;
+    private int gridSize;
     private boolean [] siteGrids;
     private WeightedQuickUnionUF wquf;
-    private boolean percolationJudge;
+    //    private boolean percolationJudge;
     // Create NN grid with all sites blocked
     private int two2one(int i, int j){
 	return i*N + j;
     }
-	
+    private void checkInput(int i, int j){
+	if(i<1||i>N)
+	    throw new IndexOutOfBoundsException("Grid i outside boundary.");
+	if(j<1||j>N)
+	    throw new IndexOutOfBoundsException("Grid i outside boundary.");
+    }
+
+
 	
     public Percolation(int n){
 	if(n < 1){
 	    throw new IllegalArgumentException("Non-positive grid size.");
 	}
 	N = n;
-	percolationJudge = false;
-	siteGrids = new boolean [N*N + 2];
-	for(int i = 0; i<N*N; i++)
+	//	percolationJudge = false;
+
+	gridSize = N*N;
+	//	siteGrids = new boolean [gridSize + 1];
+	siteGrids = new boolean [gridSize + 2];
+	for(int i = 0; i<gridSize; i++)
 	    siteGrids[i] = false;
 		
 		
 	// open the virtual top and bottom; 
 		
 	// virtual top N*N 
-	siteGrids[N*N] = true;
+	siteGrids[gridSize] = true;
 	// virtual bottom N*N + 1
-	siteGrids[N*N + 1] = true;
+	siteGrids[gridSize + 1] = true;
 	// Connect the virtual top&bottom
-	wquf = new WeightedQuickUnionUF(N*N + 2);
-	// for(int i = 0; i< N; i++){
-	//     // connect the virtual top to the first row 
-	//     wquf.union(N*N,  two2one(0, i));
-	//     // connect the virtual bottom to the last row
-	//     wquf.union(N*N + 1, two2one(N - 1, i));
-	// }
+	wquf = new WeightedQuickUnionUF(gridSize + 2);
+	// wquf = new WeightedQuickUnionUF(gridSize + 1);
     }
 
     // Open site (i, j) if it is not open yet.
@@ -54,10 +60,15 @@ public class Percolation {
 	siteGrids[thisSite] = true;
 
 	if(i==1){
-	    wquf.union(N*N,  thisSite);
+	    wquf.union(gridSize,  thisSite);
+	    if(N==1)
+	    	wquf.union(gridSize+1,  thisSite);
 	}else if(i==N){
-	    //	if(wquf.connected(N*N, thisSite))
-		wquf.union(N*N + 1, thisSite);
+	    // if(!percolationJudge){
+	    // 	if(wquf.connected(gridSize, thisSite))
+		// percolationJudge = true;
+		wquf.union(gridSize + 1, thisSite);
+	    // }
 	}
 
 	//open; connect it to all of its adjacent open sites.
@@ -82,38 +93,36 @@ public class Percolation {
 
     // Is site (i,j) open?
     public boolean isOpen(int i, int j){
-	if(i<1||i>N||j<1||j>N){
-	    throw new IndexOutOfBoundsException("Grid outside boundary.");
-	}
-     	i--;j--;
+     	checkInput(i, j);
+	i--;j--;
 	return siteGrids[two2one(i, j)];
     }    
     
     // Is site (i,j) full?
     public boolean isFull(int i, int j){
-    	
-	if(i<1||i>N||j<1||j>N){
-	    throw new IndexOutOfBoundsException("Grid outside boundary.");
-	}
+     	checkInput(i, j);
 	i--;j--;
 
 	// Is this grid connected to the virtual top ? 	
     	return wquf.connected( 
-			      N*N, two2one(i, j));
+			      gridSize, two2one(i, j));
     }
     
     // Does the system percolates? 
     public boolean percolates(){
     	// If the virtual top is connected to the virtual bottom
-	if(percolationJudge)
-	    return percolationJudge;
-	else
-	    return wquf.connected(N*N, N*N + 1);
+	// if(percolationJudge)
+	//return percolationJudge;
+	// else
+	return wquf.connected(gridSize, gridSize + 1);
     }
     
     // test client
     public static void main(String [] args){
     	
+    	Percolation p = new Percolation(1);
+    	p.open(1, 1);
+        System.out.println("Percolate ?: " + p.percolates());
     	
     }
 	
